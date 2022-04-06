@@ -1,38 +1,102 @@
-import 'package:palpitate/PlaylistUI/randomSong.dart';
 import 'package:flutter/material.dart';
-import 'package:palpitate/PlaylistUI/playlist.dart';
+import 'package:marquee/marquee.dart';
+import 'package:palpitate/HomePage/piano.dart';
+import 'dart:math';
 
 List<String> CoverList = [
   //Instrument
-  "https://i.pinimg.com/474x/68/b1/db/68b1db8cb2b3ca1fe77cf2d484600bf2.jpg",
-  "https://i.pinimg.com/564x/0e/f8/72/0ef872801be82d593c5e635eea752fdf.jpg",
-  "https://i.pinimg.com/564x/aa/7e/07/aa7e07fbdf8d0396cd63f4701f18c07c.jpg",
-  "https://i.pinimg.com/564x/de/ac/63/deac63cb14ff7180d7e3bc79fd4ba5be.jpg",
-  "https://i.pinimg.com/564x/bb/ea/ca/bbeaca01ea982b459ac88ef03ab7d0e7.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/musicbox/1.jpg", //Music Box
+  "https://dlmocha.com/app/MellowSik_Images/musicbox/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/musicbox/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/musicbox/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/musicbox/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/piano/1.jpg", //Piano
+  "https://dlmocha.com/app/MellowSik_Images/piano/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/piano/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/piano/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/piano/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/violin/1.jpg", //Violin
+  "https://dlmocha.com/app/MellowSik_Images/violin/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/violin/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/violin/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/violin/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/guitar/1.jpg", //Guitar
+  "https://dlmocha.com/app/MellowSik_Images/guitar/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/guitar/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/guitar/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/guitar/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/mixInstru/1.jpg", // Mix
+  "https://dlmocha.com/app/MellowSik_Images/mixInstru/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/mixInstru/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/mixInstru/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/mixInstru/5.jpg",
+
   //Type
-  "https://i.pinimg.com/564x/55/6a/90/556a90461357fca9a425ae8cb4075405.jpg",
-  "https://i.pinimg.com/564x/02/eb/ac/02ebac2ba52eda2828446a992271c0a1.jpg",
-  "https://i.pinimg.com/474x/17/07/c4/1707c418c6a6305e306ff9a3c77cce10.jpg",
-  "https://i.pinimg.com/564x/8e/1f/4a/8e1f4a38209ca83f853662b02cdf8bea.jpg"
+  "https://dlmocha.com/app/MellowSik_Images/anime/1.jpg", //Anime
+  "https://dlmocha.com/app/MellowSik_Images/anime/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/anime/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/anime/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/anime/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/kdrama/1.jpg", //K-drama
+  "https://dlmocha.com/app/MellowSik_Images/kdrama/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/kdrama/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/kdrama/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/kdrama/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/pop/1.jpg", //Pop Song
+  "https://dlmocha.com/app/MellowSik_Images/pop/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/pop/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/pop/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/pop/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/classical/1.jpg", //Classical
+  "https://dlmocha.com/app/MellowSik_Images/classical/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/classical/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/classical/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/classical/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/cafe/1.jpg", //Cafe
+  "https://dlmocha.com/app/MellowSik_Images/cafe/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/cafe/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/cafe/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/cafe/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/study/1.jpg", // Study
+  "https://dlmocha.com/app/MellowSik_Images/study/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/study/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/study/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/study/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/relax/1.jpg", //Relax
+  "https://dlmocha.com/app/MellowSik_Images/relax/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/relax/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/relax/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/relax/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/travel/1.jpg", //Travel
+  "https://dlmocha.com/app/MellowSik_Images/travel/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/travel/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/travel/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/travel/5.jpg",
 ];
 
 class SongScroll extends StatefulWidget {
-  static String id = "Menu";
   @override
   _SongScrollState createState() => _SongScrollState();
 }
 
 class _SongScrollState extends State<SongScroll> {
+  Random random = new Random();
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          image: new DecorationImage(
-              image: NetworkImage(
-                  "https://i.pinimg.com/564x/b2/70/d9/b270d96b704103fd08b19646c0e87992.jpg"),
-              fit: BoxFit.fill)),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
+        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 10.0),
         child: SizedBox(
           height: 900,
           child: Column(
@@ -47,93 +111,119 @@ class _SongScrollState extends State<SongScroll> {
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
-              Expanded(
+              Container(
+                height: 200,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    AlbumContainer(CoverList[0], "Music Box"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5)], " Music Box", "musicbox"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[1], "Piano"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 5], " Piano", "piano"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[2], "Violin"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 10], " Violin", "violin"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[3], "Guitar"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 15], " Guitar", "guitar"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[4], "Harp"),
+                    AlbumContainer(CoverList[random.nextInt(5) + 20],
+                        " Mix Instrument", "mixInstrument"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
                   ],
                 ),
               ), //Album1
+              SizedBox(
+                height: 20.0,
+              ),
               Text(
-                "Type",
+                "Category",
                 style: TextStyle(
                     color: Color(0xff55efc4),
                     fontSize: 28.0,
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
-              Expanded(
+              Container(
+                height: 200,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    AlbumContainer(CoverList[5], "Anime"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 25], " Anime", "anime"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[6], "K-Drama"),
+                    AlbumContainer(CoverList[random.nextInt(5) + 30],
+                        " K-Drama", "kdrama"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[7], "Morning Cafe"),
+                    AlbumContainer(CoverList[random.nextInt(3) + 35],
+                        " Pop Song", "popSong"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[8], "Travel"),
+                    AlbumContainer(CoverList[random.nextInt(5) + 40],
+                        " Classical", "classical"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
                   ],
                 ),
               ), //Album2
+              SizedBox(
+                height: 20.0,
+              ),
               Text(
-                "New Music",
+                "Activity",
                 style: TextStyle(
                     color: Color(0xff55efc4),
                     fontSize: 28.0,
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
-              Expanded(
+              Container(
+                height: 200,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
-                    AlbumContainer(CoverList[3], "CoverName"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 45], " Cafe", "cafe"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[4], "CoverName"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 50], " Study", "study"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
                     ),
-                    AlbumContainer(CoverList[5], "CoverName"),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 55], " Relax", "relax"),
                     SizedBox(
-                      width: 28.0,
+                      width: 10.0,
+                    ),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5) + 60], " Travel", "travel"),
+                    SizedBox(
+                      width: 10.0,
                     ),
                   ],
                 ),
@@ -145,20 +235,29 @@ class _SongScrollState extends State<SongScroll> {
     );
   }
 
-  Widget AlbumContainer(String CoverUrl, String Title) {
-    return Container(
-      child: InkWell(
-        onTap: () {
-          print("Press Key");
-          setState(() {
-            Navigator.pushNamed(context, MusicApp.id);
-          });
-        },
-        child: SizedBox(
-          height: 900,
+  Widget AlbumContainer(String CoverUrl, String Title, String API_URL) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15.0),
+      child: Container(
+        height: 200,
+        width: 160,
+        color: Colors.black12,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) {
+                return new Piano(type: API_URL);
+              }));
+            });
+          },
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              SizedBox(
+                height: 10.0,
+              ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(12.0),
                 child: Container(
@@ -169,15 +268,27 @@ class _SongScrollState extends State<SongScroll> {
               SizedBox(
                 height: 12.0,
               ),
-              Text(
-                Title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 22.0),
-              ),
-              SizedBox(
-                height: 12.0,
+              Container(
+                //color: Colors.blue,
+                height: 25,
+                width: 150,
+                child: Title.length > 10
+                    ? Marquee(
+                        text: Title,
+                        blankSpace: 15,
+                        style: TextStyle(
+                            fontFamily: 'Tourney',
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20),
+                        scrollAxis: Axis.horizontal,
+                      )
+                    : Text(Title,
+                        style: TextStyle(
+                            fontFamily: 'Tourney',
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20)),
               ),
             ],
           ),
