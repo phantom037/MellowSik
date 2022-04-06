@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/phantom037/MellowSik">
-    <img src="https://dlmocha.com/GameImages/MellowSik.png" alt="Logo" width="80" height="80">
+    <img src="https://dlmocha.com/GameImages/MellowSik.PNG" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">MellowSik</h3>
@@ -24,7 +24,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot](https://c0.wallpaperflare.com/preview/661/972/63/piano-open-air-nature-mountain.jpg)]
+![Product Name Screen Shot](https://c0.wallpaperflare.com/preview/661/972/63/piano-open-air-nature-mountain.jpg)
 
 Instrumental music is defined as music intended to be performed by a musical instrument or group of instruments. Scientific research tells us that learning to play an instrument is good for your brain, so perhaps it shouldn't be surprising a new study published in Evolutionary Behavioral Sciences suggests that those who prefer instrumental music tend to be more intelligent. With MellowSik you will have a chance to immerse into this Instrumental world and stream as many songs as you like whenever you are.
 
