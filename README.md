@@ -29,8 +29,6 @@
 Instrumental music is defined as music intended to be performed by a musical instrument or group of instruments. Scientific research tells us that learning to play an instrument is good for your brain, so perhaps it shouldn't be surprising a new study published in Evolutionary Behavioral Sciences suggests that those who prefer instrumental music tend to be more intelligent. With MellowSik you will have a chance to immerse into this Instrumental world and stream as many songs as you like whenever you are.
 
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 ### Fontend
