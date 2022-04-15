@@ -1,16 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:math';
 import 'dart:ui';
 import 'package:audio_manager/audio_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:palpitate/HomePage/home_Screen.dart';
-import 'package:palpitate/Support/splash_Screen.dart';
 import 'package:palpitate/Widget/SearchWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:marquee/marquee.dart';
 import 'package:palpitate/Support/instruction.dart';

@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:new_version/new_version.dart';
-import 'package:palpitate/HomePage/home_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:palpitate/Support/splash_Screen.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +10,6 @@ import 'package:http/http.dart' as http;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferences.getInstance();
-  //await SharedPreferences.getInstance();
   SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MellowSik());
 }
@@ -54,7 +51,6 @@ class _MyAppState extends State<MyApp> {
     http.Response response = await http.get(url);
     var update = jsonDecode(response.body)['MellowSik']['version'];
     var version = "2.0.2";
-    // Instantiate NewVersion manager object (Using GCP Console app as example)
     final newVersion = NewVersion(
       iOSId: 'com.leotran9x.palpitate',
       androidId: 'com.leotran9x.palpitate',
@@ -71,10 +67,6 @@ class _MyAppState extends State<MyApp> {
             '\nIf you already updated please skip.',
       );
     }
-    /*
-    print("ME : " + status.localVersion);
-    print("STORE : " + status.storeVersion);
-     */
   }
 
   @override

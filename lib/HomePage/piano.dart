@@ -6,7 +6,6 @@ import 'package:audio_manager/audio_manager.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:palpitate/HomePage/home_Screen.dart';
 import 'package:palpitate/HomePage/search_page.dart';
-import 'package:palpitate/Support/splash_Screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

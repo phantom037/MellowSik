@@ -8,9 +8,6 @@ void main() {
 }
 
 class SplashScreen extends StatelessWidget {
-  //const SplashScreen({Key key}) : super(key: key);
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -29,8 +26,6 @@ class SplashScreen extends StatelessWidget {
 }
 
 class Splash extends StatelessWidget {
-  //const Splash({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     bool lightMode =
