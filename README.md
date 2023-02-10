@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/phantom037/MellowSik">
-    <img src="https://dlmocha.com/GameImages/MellowSik.PNG" alt="Logo" width="80" height="80">
+    <img src="https://dlmocha.com/GameImages/MellowSik.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">MellowSik</h3>
@@ -41,7 +41,11 @@ Instrumental music is defined as music intended to be performed by a musical ins
 ### Backend
 
 * [RestAPI](https://github.com/)
+* [Jenkins](https://www.jenkins.io)
 * [JAVA Spring](https://start.spring.io/)
+
+### Cloud
+* [Dropbox](https://www.dropbox.com)
 * [Github](https://github.com/)
 
 
