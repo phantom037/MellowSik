@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'Song.dart';
+import '../Model/Song.dart';
 
 class SongApi {
   static Future<List<Song>> getSongs(String query) async {

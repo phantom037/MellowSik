@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Constant/themeColor.dart';
+
 class SearchWidget extends StatefulWidget {
   final String text;
   final ValueChanged<String> onChanged;
@@ -21,8 +23,8 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final styleActive = TextStyle(color: Colors.greenAccent);
-    final styleHint = TextStyle(color: Color(0xff55efc4));
+    final styleActive = TextStyle(color: Color(0xffffeaa7));
+    final styleHint = TextStyle(color: themeColor);
     final style = widget.text.isEmpty ? styleHint : styleActive;
 
     return Container(

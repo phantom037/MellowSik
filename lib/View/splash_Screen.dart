@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:palpitate/HomePage/home_Screen.dart';
+import 'package:palpitate/Constant/themeColor.dart';
+import 'package:palpitate/View/keepLogin.dart';
+import 'package:palpitate/View/home_Screen.dart';
+import 'package:palpitate/View/login.dart';
+import 'package:palpitate/Widget/BottomNavBar.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +23,7 @@ class SplashScreen extends StatelessWidget {
           return MaterialApp(debugShowCheckedModeBanner: false, home: Splash());
         } else {
           // Loading is done, return the app:
-          return HomePage();
+          return KeepLogin();
         }
       },
     );
@@ -31,9 +36,7 @@ class Splash extends StatelessWidget {
     bool lightMode =
         MediaQuery.of(context).platformBrightness == Brightness.light;
     return Scaffold(
-      backgroundColor: lightMode
-          ? const Color(0xff55efc4).withOpacity(1.0)
-          : const Color(0x00042a49).withOpacity(1.0),
+      backgroundColor: themeColor.withOpacity(1.0),
       body: Center(
           child: SizedBox(
               width: 100.0,

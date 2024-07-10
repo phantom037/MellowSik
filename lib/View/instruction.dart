@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Constant/themeColor.dart';
+
 class Instruction extends StatefulWidget {
   const Instruction({Key key}) : super(key: key);
 
@@ -13,27 +15,28 @@ class _InstructionState extends State<Instruction> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          'Support Center',
-          style: TextStyle(
-            color: Color(0xff55efc4),
-            fontFamily: 'Amatic',
-            fontSize: 25.0,
-            fontWeight: FontWeight.w900,
+        title: Container(
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              color: themeColor.withAlpha(60),
+              blurRadius: 6.0,
+              spreadRadius: 0.0,
+              offset: const Offset(0.0, 3.0),
+            ),
+          ]),
+          child: Text(
+            'Support Center',
+            style: TextStyle(
+              color: themeColor,
+              fontFamily: 'Amatic',
+              fontSize: 25.0,
+              fontWeight: FontWeight.w900,
+            ),
           ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Color(0xff00cec9),
-            ),
-            onPressed: () {
-              setState(() {
-                Navigator.pop(context);
-              });
-            }), //HomePage,
+        //HomePage,
       ),
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -72,7 +75,7 @@ class _InstructionState extends State<Instruction> {
                                   const EdgeInsets.symmetric(horizontal: 2.0),
                               child: Icon(
                                 Icons.info_outline,
-                                color: Color(0xff00cec9),
+                                color: themeColor,
                               ),
                             ),
                           ),
@@ -113,7 +116,7 @@ class _InstructionState extends State<Instruction> {
                                   const EdgeInsets.symmetric(horizontal: 2.0),
                               child: Icon(
                                 Icons.home,
-                                color: Color(0xff00cec9),
+                                color: themeColor,
                               ),
                             ),
                           ),
@@ -156,7 +159,7 @@ class _InstructionState extends State<Instruction> {
                                   const EdgeInsets.symmetric(horizontal: 2.0),
                               child: Icon(
                                 Icons.insert_link,
-                                color: Color(0xff00cec9),
+                                color: themeColor,
                               ),
                             ),
                           ),
@@ -169,7 +172,7 @@ class _InstructionState extends State<Instruction> {
                                   const EdgeInsets.symmetric(horizontal: 2.0),
                               child: Icon(
                                 Icons.search,
-                                color: Color(0xff00cec9),
+                                color: themeColor,
                               ),
                             ),
                           ),

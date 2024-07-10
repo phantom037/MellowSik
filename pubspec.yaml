@@ -1,8 +1,8 @@
 name: palpitate
-description: A new Flutter application.
+description: Music Streaming App.
 
 
-version: 2.0.2+14
+version: 2.3.1+26
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -16,11 +16,24 @@ dependencies:
   audio_manager: ^0.8.2
   new_version: ^0.2.3
   http: ^0.13.3
-  shared_preferences: ^2.0.6
+  shared_preferences: ^2.2.0
   marquee: ^2.2.0
   internet_connection_checker: ^0.0.1+2
   flutter_native_splash: ^1.2.3
   auto_size_text: ^2.1.0
+  curved_navigation_bar: ^1.0.3
+  percent_indicator: ^4.2.2
+  flutter_local_notifications: ^9.1.4
+  flutter_blurhash: ^0.7.0
+  firebase_auth: ^4.7.2
+  google_sign_in: ^6.1.4
+  sign_in_with_apple: ^4.3.0
+  fluttertoast: ^8.2.2
+  cloud_firestore: ^4.8.4
+  firebase_storage: ^11.1.0
+  image_picker: ^0.8.4+4
+  cached_network_image: ^3.1.0+1
+  provider: ^6.1.2
 
 
 

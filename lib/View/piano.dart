@@ -1,20 +1,30 @@
 import 'dart:ffi';
 import 'dart:math';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_manager/audio_manager.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:palpitate/HomePage/home_Screen.dart';
-import 'package:palpitate/HomePage/search_page.dart';
+import 'package:palpitate/View/home_Screen.dart';
+import 'package:palpitate/View/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:marquee/marquee.dart';
-import 'package:palpitate/Support/instruction.dart';
+import 'package:palpitate/View/instruction.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:crypto/crypto.dart';
 
+import '../Constant/themeColor.dart';
+import '../Widget/MyRoute.dart';
+
+/**
+ * @Attribute type: the type of the playlist
+ */
 class Piano extends StatefulWidget {
   final String type;
   Piano({Key key, @required this.type}) : super(key: key);
@@ -23,24 +33,28 @@ class Piano extends StatefulWidget {
 }
 
 class _PianoState extends State<Piano> {
-  SharedPreferences preferences;
+  String userId; // id of the user
+  SharedPreferences preferences; // cache data of the user
+  // set default value for the streaming list activities
   bool isPlaying = false;
   Duration _duration;
   Duration _position;
   double _slider;
   num curIndex = 0;
   PlayMode playMode = AudioManager.instance.playMode;
-  bool maximizeUI = false;
-  List<AudioInfo> _list = [];
   bool hasInternet = true;
+
+  bool maximizeUI = false; // default value to pitch the music playing bar
+  List<AudioInfo> _list = []; // empty list store the songs of the playlist
+  Map<String, int> streaming = {}; // map the playing song with number of its streaming time
 
   final list = [
     {
       'title': "Intro",
-      'singer': "Welcome to Paltitate",
+      'singer': "Welcome to MellowSik",
       'url':
           "https://assets.mixkit.co/sfx/preview/mixkit-relaxing-harp-sweep-2628.mp3",
-      'coverUrl': "https://dlmocha.com/GameImages/MellowSik.PNG",
+      'coverUrl': "https://dlmocha.com/GameImages/MellowSik.png",
       'info': "https://dlmocha.com/app/mellowsik",
       'cover': "Mixkit Library"
     },
@@ -64,8 +78,17 @@ class _PianoState extends State<Piano> {
     playIntro();
   }
 
+  /**
+   * Get the catch data
+   */
   Future<void> initializePreference() async {
     this.preferences = await SharedPreferences.getInstance();
+    try{
+      this.streaming = preferences.getBool("streamMap") ?? {};
+      this.userId = preferences.getString("id");
+    }catch (e){
+      preferences.setString('streamMap', jsonEncode(streaming));
+    }
   }
 
   @override
@@ -74,11 +97,17 @@ class _PianoState extends State<Piano> {
     super.dispose();
   }
 
+  /**
+   * Play the first song (default MellowSik sound) in the list
+   */
   @override
   void playIntro() {
     AudioManager.instance.play(index: 0);
   }
 
+  /**
+   * Fetch data from api that match the streaming songs to the list
+   */
   void loadFile() async {
     List<int> numberList = [];
     Random random = new Random();
@@ -102,14 +131,12 @@ class _PianoState extends State<Piano> {
           var decodeCoverURL = jsonDecode(data)['api'][num]['coverUrl'];
           var decodeCover = jsonDecode(data)['api'][num]['cover'];
           var decodeInfo = jsonDecode(data)['api'][num]['info'];
-
           list.add({
             'title': decodeTitle,
             'singer': decodeSinger,
             'url': decodeUrl,
             'coverUrl': decodeCoverURL,
-            'test': jsonDecode(data)['api'][num]['cover'],
-            'cover:': decodeCover,
+            'cover': decodeCover,
             'info': decodeInfo,
           });
           AudioInfo info = AudioInfo(decodeUrl,
@@ -121,8 +148,35 @@ class _PianoState extends State<Piano> {
     setState(() {
       AudioManager.instance.play(index: 0);
     });
+    // print("======================================================================");
+    // for(var item in list){
+    //   print("$item\n\n");
+    // }
   }
 
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  Future<String> loadImageFromUrl(String imageUrl) async {
+    try {
+      var response = await http.head(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        return imageUrl;
+      } else {
+        return "invalid";
+      }
+    } catch (e) {
+      // Handle any exceptions that might occur during the HTTP request
+      return "invalid";
+    }
+  }
+
+  /**
+   * Load all songs from the list to AudioManager
+   */
   void setupAudio() {
     list.forEach((item) => _list.add(AudioInfo(item["url"],
         title: item["title"],
@@ -144,20 +198,20 @@ class _PianoState extends State<Piano> {
           _position = AudioManager.instance.position;
           _duration = AudioManager.instance.duration;
           _slider = 0;
-          setState(() {});
+          //setState(() {});
           break;
         case AudioManagerEvents.ready:
           //print("ready to play");
           _position = AudioManager.instance.position;
           _duration = AudioManager.instance.duration;
-          setState(() {});
+          //setState(() {});
           // if you need to seek times, must after AudioManagerEvents.ready event invoked
           // AudioManager.instance.seekTo(Duration(seconds: 10));
           break;
         case AudioManagerEvents.seekComplete:
           _position = AudioManager.instance.position;
           _slider = _position.inMilliseconds / _duration.inMilliseconds;
-          setState(() {});
+          //setState(() {});
           //print("seek event is completed. position is [$args]/ms");
           break;
         case AudioManagerEvents.buffering:
@@ -165,27 +219,34 @@ class _PianoState extends State<Piano> {
           break;
         case AudioManagerEvents.playstatus:
           isPlaying = AudioManager.instance.isPlaying;
-          setState(() {});
+          //setState(() {});
           break;
         case AudioManagerEvents.timeupdate:
           _position = AudioManager.instance.position;
           _slider = _position.inMilliseconds / _duration.inMilliseconds;
-          setState(() {});
+          //setState(() {});
           //AudioManager.instance.updateLrc(args["desc"].toString());
           break;
         case AudioManagerEvents.error:
-          setState(() {});
+          //setState(() {});
           break;
         case AudioManagerEvents.ended:
+          String key = sha256ofString(list[curIndex]["title"] + list[curIndex]["url"]);
+          streaming[key] = (streaming[key] ?? 0) + 1;
+          FirebaseFirestore.instance.collection("user").doc(userId).update({
+            "streamMap": this.streaming,
+          });
           AudioManager.instance.next();
           break;
         case AudioManagerEvents.volumeChange:
-          setState(() {});
+          //setState(() {});
           break;
         default:
           break;
       }
     });
+    print("======================================================================");
+    print("Streaming: " + streaming.toString());
   }
 
   @override
@@ -194,67 +255,95 @@ class _PianoState extends State<Piano> {
     return WillPopScope(
       onWillPop: () async => false,
       child: hasInternet
-          ? Scaffold(
-              backgroundColor: Colors.black12,
-              body: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Stack(children: <Widget>[
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        //Text(widget.type, style: TextStyle(fontSize: 18.0, color: Colors.white),),
-                        //Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
-                        Expanded(
-                          child: ListView.separated(
-                              itemBuilder: (context, index) {
-                                return new ListTile(
-                                    title: Text(
-                                      list[index]["title"],
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white),
-                                    ),
-                                    subtitle: Text(
-                                      list[index]["singer"],
-                                      style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.white),
-                                    ),
-                                    leading: Container(
-                                      height: 78.0,
-                                      width: 78.0,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                list[index]["coverUrl"]),
-                                          ) //DecorationImage
-                                          ), //BoxDecoration
-                                    ), //Container
-                                    onTap: () => AudioManager.instance
-                                        .play(index: index));
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      Divider(),
-                              itemCount: list.length),
-                        ),
-                        Container(
-                          child: maximizeUI
-                              ? DetailMusicPlayer(context)
-                              : MiniPlayer(),
-                        ),
-                      ],
+          ?  Scaffold(
+                extendBody: true,
+                appBar: maximizeUI ? null : AppBar(
+                      toolbarHeight: 50,
+                      backgroundColor: Colors.transparent,
+                      title: Text("Your playlist", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                      leading: IconButton(icon: Icon(Icons.arrow_back_ios_sharp, color: themeColor,),
+                        onPressed: (){
+                          AudioManager.instance.release();
+                          Navigator.pop(context);
+                        },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,),
                     ),
-                  ),
-                ]),
-              ))
-          : Scaffold(
+                backgroundColor: Color(0xff1f222b),
+                body: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Stack(children: <Widget>[
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          //Text(widget.type, style: TextStyle(fontSize: 18.0, color: Colors.white),),
+                          //Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
+                          Expanded(
+                            child: ListView.separated(
+                                itemBuilder: (context, index) {
+                                  return new ListTile(
+                                      title: Text(
+                                        list[index]["title"].length < 25
+                                            ? list[index]["title"]
+                                            : list[index]["title"]
+                                                    .substring(0, 23) +
+                                                "...",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
+                                      ),
+                                      subtitle: Text(
+                                        list[index]["singer"],
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
+                                      ),
+                                      leading:
+                                      Container(
+                                        color: Colors.redAccent,
+                                          height: 50.0,
+                                          width: 50.0,
+                                                child: BlurHash(hash: "T+N,i5RPR*_NS2n%NGt7j[V@V@bH", image: list[index]["coverUrl"]),
+                                          ),
+
+                                      // Container(
+                                      //   height: 78.0,
+                                      //   width: 78.0,
+                                      //   decoration: BoxDecoration(
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(16.0),
+                                      //       image: DecorationImage(image: NetworkImage(list[index]["coverUrl"]),) //DecorationImage
+                                      //       ), //BoxDecoration
+                                      // ), //Container
+                                      onTap: () => AudioManager.instance
+                                          .play(index: index));
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        Divider(),
+                                itemCount: list.length),
+                          ),
+                          Container(
+                            child: MiniPlayer(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: maximizeUI
+                          ? DetailMusicPlayer(context)
+                          : Container(),
+                    ),
+                  ]),
+                ),
+        )
+          :
+
+      Scaffold(
               backgroundColor: Colors.black54,
               body: Center(
                 child: Text(
@@ -262,11 +351,12 @@ class _PianoState extends State<Piano> {
                   style: TextStyle(
                     fontFamily: 'Amatic',
                     fontSize: 30.0,
-                    color: Colors.greenAccent,
+                    color: themeColor,
                   ),
                 ),
               ),
             ),
+
     );
   }
 
@@ -284,23 +374,33 @@ class _PianoState extends State<Piano> {
       },
        */
       child: Container(
-        color: Colors.black,
+        color: Color(0xff2f3542),
         //alignment: Alignment.topRight,
         child: Column(
           children: <Widget>[
             Container(
-              //alignment: Alignment.topRight,
+              padding: EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
+              alignment: Alignment.topRight,
               color: Color(0xff2f3542),
-              child: FlatButton(
+              child: TextButton(
                 onPressed: () {
                   setState(() {
                     maximizeUI = true;
                   });
                 },
                 child: Row(
+                  //crossAxisAlignment: CrossAxisAlignment.stretch,
                   // .evenly if error
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
+                    Container(
+                      height: 50,
+                      width: 50,
+                      child: Image.network(list[curIndex]["coverUrl"]),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Expanded(
                       //alignment: Alignment.topRight,
                       child: Column(
@@ -352,65 +452,69 @@ class _PianoState extends State<Piano> {
                 ),
               ), //Row
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                IconButton(
-                    icon: Icon(
-                      Icons.home_rounded,
-                      color: Color(0xff00cec9),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        AudioManager.instance.audioList.clear();
-                        AudioManager.instance.release();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return HomePage();
-                        }));
-                      });
-                    }),
-                IconButton(
-                    icon: Icon(
-                      Icons.info_outline,
-                      color: Color(0xff00cec9),
-                    ),
-                    onPressed: () {
-                      launch("https://dlmocha.com/app/mellowsik");
-                    }),
-                IconButton(
-                  icon: Icon(Icons.help_center_outlined,
-                      color: Color(0xff00cec9)),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return Instruction();
-                    }));
-                  },
-                ),
-                IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      color: Color(0xff00cec9),
-                    ),
-                    onPressed: () {
-                      //Disable the 2 lines below if search and play in the playlist
-                      AudioManager.instance.audioList.clear();
-                      AudioManager.instance.release();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return SearchScreen();
-                      }));
-                    })
-              ],
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
+            SizedBox(height: 15,),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: <Widget>[
+            //     IconButton(
+            //         icon: Icon(
+            //           Icons.home_rounded,
+            //           color: themeColor,
+            //         ),
+            //         onPressed: () {
+            //           setState(() {
+            //             AudioManager.instance.audioList.clear();
+            //             AudioManager.instance.release();
+            //             Navigator.push(context, MyRoute(builder: (context) {
+            //               return HomePage();
+            //             }));
+            //           });
+            //         }),
+            //     IconButton(
+            //         icon: Icon(
+            //           Icons.info_outline,
+            //           color: themeColor,
+            //         ),
+            //         onPressed: () {
+            //           launch("https://dlmocha.com/app/mellowsik");
+            //         }),
+            //     IconButton(
+            //         icon: Icon(
+            //           Icons.search,
+            //           color: themeColor,
+            //         ),
+            //         onPressed: () {
+            //           //Disable the 2 lines below if search and play in the playlist
+            //           AudioManager.instance.audioList.clear();
+            //           AudioManager.instance.release();
+            //           Navigator.push(context, MyRoute(builder: (context) {
+            //             return SearchScreen();
+            //           }));
+            //         }),
+            //     IconButton(
+            //       icon: Icon(Icons.help_center_outlined, color: themeColor),
+            //       onPressed: () {
+            //         Navigator.push(context, MyRoute(builder: (context) {
+            //           return Instruction();
+            //         }));
+            //       },
+            //     ),
+            //     IconButton(
+            //         icon: const Icon(Icons.timer_rounded, color: themeColor),
+            //         onPressed: () {
+            //           AudioManager.instance.audioList.clear();
+            //           AudioManager.instance.release();
+            //           Navigator.push(context, MyRoute(builder: (context) {
+            //             return SearchScreen();
+            //           }));
+            //         }),
+            //   ],
+            // ),
+
           ],
         ), //Column
       ),
-    ); //Container
+    );
   }
 
   Widget bottomPanel() {
@@ -426,15 +530,16 @@ class _PianoState extends State<Piano> {
         children: <Widget>[
           Text(
             _formatDuration(_position),
-            style: TextStyle(color: Color(0xff00cec9)),
+            style: TextStyle(color: Color(0xffffeedb)),
           ),
           SizedBox(width: MediaQuery.of(context).size.width / 1.7),
           Text(
             _formatDuration(_duration),
-            style: TextStyle(color: Color(0xff00cec9)),
+            style: TextStyle(color: Color(0xffffeedb)),
           ),
         ],
       ),
+
       Container(
         ///IOS is :16, Android is 7
         padding: EdgeInsets.symmetric(vertical: 16),
@@ -453,7 +558,7 @@ class _PianoState extends State<Piano> {
                 iconSize: 50,
                 icon: Icon(
                   Icons.skip_previous,
-                  color: Color(0xff00cec9),
+                  color: themeColor,
                 ),
                 onPressed: () => AudioManager.instance.previous()),
             IconButton(
@@ -465,7 +570,7 @@ class _PianoState extends State<Piano> {
                 ///IOS is :60, Android is 50
                 isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
                 size: 60.0,
-                color: Color(0xff00cec9),
+                color: themeColor,
               ),
             ),
             IconButton(
@@ -474,13 +579,13 @@ class _PianoState extends State<Piano> {
                 iconSize: 50,
                 icon: Icon(
                   Icons.skip_next,
-                  color: Color(0xff00cec9),
+                  color: themeColor,
                 ),
                 onPressed: () => AudioManager.instance.next()),
             IconButton(
               icon: Icon(
                 Icons.insert_link,
-                color: Color(0xff00cec9),
+                color: themeColor,
               ),
               onPressed: () {
                 setState(() {
@@ -499,17 +604,17 @@ class _PianoState extends State<Piano> {
       case PlayMode.sequence:
         return Icon(
           Icons.repeat,
-          color: Color(0xff00cec9),
+          color: themeColor,
         );
       case PlayMode.shuffle:
         return Icon(
           Icons.shuffle,
-          color: Color(0xff00cec9),
+          color: themeColor,
         );
       case PlayMode.single:
         return Icon(
           Icons.repeat_one,
-          color: Color(0xff00cec9),
+          color: themeColor,
         );
     }
     return Container();
@@ -543,8 +648,8 @@ class _PianoState extends State<Piano> {
                   max: _duration.inSeconds.toDouble() > 0
                       ? _duration.inSeconds.toDouble()
                       : 1,
-                  activeColor: Color(0xff00cec9),
-                  inactiveColor: Color(0xff81ecec),
+                  activeColor: themeColor,
+                  inactiveColor: subSlidingColor,
                   onChanged: (value) {
                     setState(() {
                       // _slider = value;
@@ -585,7 +690,7 @@ class _PianoState extends State<Piano> {
         ":" +
         ((second < 10) ? "0$second" : "$second");
     return format;
-  }
+  }    
 
   Widget DetailMusicPlayer(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -631,7 +736,7 @@ class _PianoState extends State<Piano> {
                                 BorderRadius.all(Radius.circular(16.0)),
                           ),
                           child: Icon(Icons.keyboard_arrow_down,
-                              color: Color(0xff00cec9)),
+                              color: themeColor),
                         ),
                         SizedBox(height: 24.0),
                         ClipRRect(
@@ -668,9 +773,9 @@ class _PianoState extends State<Piano> {
                         ), //Text
                         SizedBox(height: 8.0),
                         Text(
-                          list[curIndex]["test"] == null
+                          list[curIndex]["cover"] == null
                               ? "MellowSik"
-                              : list[curIndex]["test"],
+                              : list[curIndex]["cover"],
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15.0,
@@ -701,7 +806,10 @@ class _PianoState extends State<Piano> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(48.0), topRight: Radius.circular(48.0)),
-          color: Colors.black,
+          gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.black, Colors.black54]),
         ),
       ),
     );
@@ -711,7 +819,7 @@ class _PianoState extends State<Piano> {
       double widthScreen, double heightScreen) {
     return Container(
       width: widthScreen,
-      height: heightScreen / 2,
+      height: heightScreen,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(list[curIndex]["coverUrl"]),

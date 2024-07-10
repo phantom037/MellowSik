@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:marquee/marquee.dart';
-import 'package:palpitate/HomePage/piano.dart';
+import 'package:palpitate/View/piano.dart';
 import 'dart:math';
+
+import 'MyRoute.dart';
 
 List<String> CoverList = [
   //Instrument
@@ -83,6 +86,12 @@ List<String> CoverList = [
   "https://dlmocha.com/app/MellowSik_Images/travel/3.jpg",
   "https://dlmocha.com/app/MellowSik_Images/travel/4.jpg",
   "https://dlmocha.com/app/MellowSik_Images/travel/5.jpg",
+
+  "https://dlmocha.com/app/MellowSik_Images/cello/1.jpg", //Cello
+  "https://dlmocha.com/app/MellowSik_Images/cello/2.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/cello/3.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/cello/4.jpg",
+  "https://dlmocha.com/app/MellowSik_Images/cello/5.jpg",
 ];
 
 class SongScroll extends StatefulWidget {
@@ -103,14 +112,14 @@ class _SongScrollState extends State<SongScroll> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text(
+              const Text(
                 "Instrumental",
-                style: TextStyle(
-                    color: Color(0xff55efc4),
-                    fontSize: 28.0,
+                style: const TextStyle(
+                    color: const Color(0xffffffff),
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
               Container(
@@ -119,30 +128,17 @@ class _SongScrollState extends State<SongScroll> {
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
                     AlbumContainer(
-                        CoverList[random.nextInt(5)], " Music Box", "musicbox"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
+                        CoverList[random.nextInt(5) + 65], " Cello", "cello"),
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 5], " Piano", "piano"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
+                    AlbumContainer(
+                        CoverList[random.nextInt(5)], " Music Box", "musicbox"),
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 10], " Violin", "violin"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 15], " Guitar", "guitar"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(CoverList[random.nextInt(5) + 20],
                         " Mix Instrument", "mixInstrument"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                   ],
                 ),
               ), //Album1
@@ -152,8 +148,8 @@ class _SongScrollState extends State<SongScroll> {
               Text(
                 "Category",
                 style: TextStyle(
-                    color: Color(0xff55efc4),
-                    fontSize: 28.0,
+                    color: Color(0xffffffff),
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -166,24 +162,12 @@ class _SongScrollState extends State<SongScroll> {
                   children: <Widget>[
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 25], " Anime", "anime"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(CoverList[random.nextInt(5) + 30],
                         " K-Drama", "kdrama"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(CoverList[random.nextInt(3) + 35],
                         " Pop Song", "popSong"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(CoverList[random.nextInt(5) + 40],
                         " Classical", "classical"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                   ],
                 ),
               ), //Album2
@@ -193,8 +177,8 @@ class _SongScrollState extends State<SongScroll> {
               Text(
                 "Activity",
                 style: TextStyle(
-                    color: Color(0xff55efc4),
-                    fontSize: 28.0,
+                    color: Color(0xffffffff),
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -207,24 +191,12 @@ class _SongScrollState extends State<SongScroll> {
                   children: <Widget>[
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 45], " Cafe", "cafe"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 50], " Study", "study"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 55], " Relax", "relax"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                     AlbumContainer(
                         CoverList[random.nextInt(5) + 60], " Travel", "travel"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
                   ],
                 ),
               ), //Album3
@@ -239,14 +211,18 @@ class _SongScrollState extends State<SongScroll> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15.0),
       child: Container(
-        height: 200,
+        height: 150,
         width: 160,
-        color: Colors.black12,
+        //color: Color(0xff2d3436),
         child: InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          //splashColor: Colors.transparent,
+          //highlightColor: Colors.transparent,
           onTap: () {
             setState(() {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
+              Navigator.push(context, MyRoute(builder: (context) {
                 return new Piano(type: API_URL);
               }));
             });
@@ -263,14 +239,17 @@ class _SongScrollState extends State<SongScroll> {
                 child: Container(
                     height: 140.0,
                     width: 140.0,
-                    child: Image.network(CoverUrl)),
+                    child: AspectRatio(
+                      aspectRatio: 1.6,
+                      child: BlurHash(hash: "T+N,i5RPR*_NS2n%NGt7j[V@V@bH", image: CoverUrl,),
+                    ),),//Image.network(CoverUrl)),
               ),
               SizedBox(
                 height: 12.0,
               ),
               Container(
                 //color: Colors.blue,
-                height: 25,
+                height: 20,
                 width: 150,
                 child: Title.length > 10
                     ? Marquee(
@@ -280,7 +259,7 @@ class _SongScrollState extends State<SongScroll> {
                             fontFamily: 'Tourney',
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
-                            fontSize: 20),
+                            fontSize: 17),
                         scrollAxis: Axis.horizontal,
                       )
                     : Text(Title,
@@ -288,7 +267,7 @@ class _SongScrollState extends State<SongScroll> {
                             fontFamily: 'Tourney',
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
-                            fontSize: 20)),
+                            fontSize: 17)),
               ),
             ],
           ),

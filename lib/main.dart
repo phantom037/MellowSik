@@ -1,15 +1,20 @@
 import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:new_version/new_version.dart';
+import 'package:palpitate/Constant/themeColor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:palpitate/Support/splash_Screen.dart';
+import 'package:palpitate/View//splash_Screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_core/firebase_core.dart';
+import 'dart:typed_data';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPreferences.getInstance();
+  await Firebase.initializeApp();
+  //await SharedPreferences.getInstance();
   SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MellowSik());
 }
@@ -31,6 +36,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+///@variable hasInternet (bool) : the internet connection status
 class _MyAppState extends State<MyApp> {
   bool hasInternet = true;
   @override
@@ -46,11 +52,15 @@ class _MyAppState extends State<MyApp> {
     checkVersion();
   }
 
+  /***
+   * This functions is used to check if device using the newest app version
+   * if not it will show dialog box asking for update
+   */
   void checkVersion() async {
     var url = Uri.parse('https://dlmocha.com/app/appUpdate.json');
     http.Response response = await http.get(url);
     var update = jsonDecode(response.body)['MellowSik']['version'];
-    var version = "2.0.2";
+    var version = "3.3.1";
     final newVersion = NewVersion(
       iOSId: 'com.leotran9x.palpitate',
       androidId: 'com.leotran9x.palpitate',
@@ -67,7 +77,17 @@ class _MyAppState extends State<MyApp> {
             '\nIf you already updated please skip.',
       );
     }
+    // String input = "Hello, World!";
+    // String hash = sha256ofString(input);
+    // print("Hash: $hash");
   }
+
+  // String sha256ofString(String input) {
+  //   final bytes = utf8.encode(input);
+  //   final digest = sha256.convert(bytes);
+  //   return digest.toString();
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +106,7 @@ class _MyAppState extends State<MyApp> {
                   style: TextStyle(
                     fontFamily: 'Amatic',
                     fontSize: 30.0,
-                    color: Colors.greenAccent,
+                    color: themeColor,
                   ),
                 ),
               ),

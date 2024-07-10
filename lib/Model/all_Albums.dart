@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:palpitate/Data/Album.dart';
-import 'package:palpitate/HomePage/songScroll.dart';
+import 'package:palpitate/Model/Album.dart';
+import 'package:palpitate/Widget/songScroll.dart';
 
 Random random = new Random();
 final allAlbums = <Album>[
