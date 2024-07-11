@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Constant/themeColor.dart';
-import '../Model/alert.dart';
+import '../Widget/alert.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   @override

@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../Constant/themeColor.dart';
-import 'package:palpitate/Model/alert.dart';
+import 'package:palpitate/Widget/alert.dart';
 import 'main_screen.dart';
 
 class LoginScreen extends StatefulWidget {

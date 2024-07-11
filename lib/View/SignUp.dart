@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Constant/themeColor.dart';
-import '../Model/alert.dart';
+import '../Widget/alert.dart';
 import 'login.dart';
 import 'main_screen.dart';
 

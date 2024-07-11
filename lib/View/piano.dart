@@ -564,6 +564,9 @@ class _PianoState extends State<Piano> {
             IconButton(
               onPressed: () async {
                 await AudioManager.instance.playOrPause();
+                setState(() {
+                  isPlaying = AudioManager.instance.isPlaying;
+                });
               },
               padding: const EdgeInsets.all(0.0),
               icon: Icon(
